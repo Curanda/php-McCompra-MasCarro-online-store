@@ -53,19 +53,84 @@
             </button>
           </div>
         </div>
-        <div class="flex justify-center items-center flex-col">
-          <ul class="flex space-x-4 text-xs">
+        <div class="flex justify-end items-end flex-col">
+          <ul
+            class="flex space-x-4 text-xs text-gray-600 [&>*]:hover:underline"
+          >
             <li><a href="#">(630) 833-0300</a></li>
             <li>|</li>
             <li><a href="#"> Email Us</a></li>
             <li>|</li>
-            <li><a href="#">Log in</a></li>
+            <style>
+              #login:checked ~ #loginMenu {
+                opacity: 1;
+              }
+            </style>
+            <li class="relative">
+              <input type="checkbox" id="login" class="hidden peer" />
+              <label for="login" class="hover:underline cursor-pointer"
+                >Log in ▼</label
+              >
+              <div
+                id="loginMenu"
+                class="absolute w-[20rem] mt-3 mr-3 px-7 py-5 right-1 top-full min-w-max drop-shadow-2xl opacity-0 bg-white border-t-2 border-yellow-500 transition delay-75 ease-in-out z-10 peer-checked:opacity-100 flex flex-col p-4 gap-3"
+              >
+                <div class="flex justify-between items-center mb-2">
+                  <h2 class="font-bold text-lg text-[#346734]">Log in</h2>
+                  <label
+                    for="login"
+                    class="text-gray-500 hover:text-gray-600 text-xl cursor-pointer"
+                  >
+                    &cross;
+                  </label>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <input
+                    type="text"
+                    placeholder="Email"
+                    class="px-3 py-2 border-1 border-gray-500"
+                  />
+                </div>
+                <div class="flex flex-col gap-1">
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    class="px-3 py-2 border-1 border-gray-500"
+                  />
+                </div>
+                <div class="flex justify-between items-center py-2">
+                  <div class="flex items-center gap-2">
+                    <input type="checkbox" id="stayLoggedIn" />
+                    <label for="stayLoggedIn" class="text-xs"
+                      >Stay logged in</label
+                    >
+                  </div>
+                  <a
+                    href="#"
+                    class="text-gray-500 hover:bg-yellow-200 text-xs underline"
+                    >Reset Password</a
+                  >
+                </div>
+                <div class="flex flex-col gap-2">
+                  <button
+                    class="bg-[#346734] text-white py-1 rounded-sm hover:bg-green-700"
+                  >
+                    Log in
+                  </button>
+                  <button
+                    class="border border-[#346734] text-[#346734] py-1 rounded-sm hover:bg-green-50"
+                  >
+                    Create login
+                  </button>
+                </div>
+              </div>
+            </li>
           </ul>
-          <div class="flex justify-center items-center">
-            <button class="text-[#346734] font-bold px-4 py-2 rounded-md">
+          <div class="flex gap-10 justify-end items-end w-full">
+            <button class="text-[#346734] font-bold py-2 rounded-md">
               ORDER
             </button>
-            <button class="text-[#346734] font-bold px-4 py-2 rounded-md">
+            <button class="text-[#346734] font-bold py-2 rounded-md">
               ORDER HISTORY
             </button>
           </div>
@@ -86,10 +151,10 @@
           <ul
             class="flex w-full space-x-4 space-y-2 flex-col text-xs mt-2 text-gray-800 [&>*]:hover:bg-yellow-100 [&>*]:hover:cursor-pointer [&>*]:hover:underline [&>*]:pb-2 [&>*]:active:bg-yellow-300 [&>*]:active:underline"
           >
-            <li><a href="#">Abrading & Polishing</a></li>
-            <li><a href="#">Building & Grounds</a></li>
-            <li><a href="#">Electrical & Lighting</a></li>
-            <li><a href="#">Fastening & Joining</a></li>
+            <li><a href="#">Quantum Harmonizing</a></li>
+            <li><a href="#">Void Anchoring & Stabilization</a></li>
+            <li><a href="#">Temporal Flux & Phasing</a></li>
+            <li><a href="#">Molecular Binding & Fusion</a></li>
           </ul>
         </div>
       </aside>
@@ -99,30 +164,40 @@
           <hr class="border-[#346734] w-full" />
           <div class="flex justify-start items-start flex-col">
             <h1 class="text-lg font-semibold text-[#346734]">
-              Fastening & Joining
+              Quantum Harmonizing
             </h1>
-            <h3 class="text-xs font-semibold">Fasteners</h3>
-            <div class="flex justify-center items-center flex-row">
+            <h3 class="text-xs font-semibold text-gray-500 mb-2">
+              Harmonizers
+            </h3>
+            <div
+              class="flex justify-start items-start gap-3 flex-row *:flex-col *:text-center *:text-[0.65rem] *:text-gray-500 *:text-wrap [&>div>a>img]:border-1 [&>div>a>img]:border-gray-200 [&>div>a>img]:w-[4rem] [&>div>a>img]:h-[4rem] [&>div>p]:text-wrap [&>div>p]:w-[4rem]"
+            >
               <div class="flex justify-center items-center">
-                <img
-                  src="https://via.placeholder.com/150"
-                  alt="Product Image"
-                />
-                <p>Product Name</p>
+                <a href="./productCardsPage.html">
+                  <img
+                    src="./images/quantum1.png"
+                    alt="Image of Small Harmonizer"
+                  />
+                </a>
+                <p>Small Harmonizers</p>
               </div>
               <div class="flex justify-center items-center">
-                <img
-                  src="https://via.placeholder.com/150"
-                  alt="Product Image"
-                />
-                <p>Product Name</p>
+                <a href="#">
+                  <img
+                    src="./images/quantum2.png"
+                    alt="Image of Medium Harmonizer"
+                  />
+                </a>
+                <p>Medium Harmonizers</p>
               </div>
               <div class="flex justify-center items-center">
-                <img
-                  src="https://via.placeholder.com/150"
-                  alt="Product Image"
-                />
-                <p>Product Name</p>
+                <a href="#">
+                  <img
+                    src="./images/quantum3.png"
+                    alt="Image of Large Harmonizer"
+                  />
+                </a>
+                <p>Large Harmonizers</p>
               </div>
             </div>
           </div>
