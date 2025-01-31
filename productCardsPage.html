@@ -1,3 +1,9 @@
+<?php
+session_start();
+
+include "db_connection.php";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -88,10 +94,16 @@
           <ul
             class="flex w-full space-x-4 space-y-2 flex-col text-xs mt-2 text-gray-800 [&>*]:hover:bg-yellow-100 [&>*]:hover:cursor-pointer [&>*]:hover:underline [&>*]:pb-2 [&>*]:active:bg-yellow-300 [&>*]:active:underline"
           >
-            <li><a href="#">Quantum Harmonizing</a></li>
-            <li><a href="#">Void Anchoring & Stabilization</a></li>
-            <li><a href="#">Temporal Flux & Phasing</a></li>
-            <li><a href="#">Molecular Binding & Fusion</a></li>
+          <?php
+              $categories = $conn->query("SELECT * FROM categories");
+              $selectedCategory = isset($_GET['category']) ? $_GET['category'] : 'Quantum Harmonizing';
+              $_SESSION['selectedCategory'] = $selectedCategory;
+              
+              foreach ($categories as $category) {
+                $isActive = ($category['category'] === $selectedCategory) ? 'bg-yellow-100' : '';
+                echo "<li class='{$isActive}'><a href='?category=" . urlencode($category['category']) . "'>{$category['category']}</a></li>";
+              }
+            ?>
           </ul>
         </div>
       </aside>
@@ -108,43 +120,34 @@
           <div
             class="flex justify-start items-start my-3 gap-3 [&>*]:border-1 [&>*]:border-gray-300 [&>*]:rounded-xs [&>*]:w-[25rem] [&>*>div]:flex [&>*>div]:flex-row [&>*>div]:justify-start [&>*>div]:items-center [&>*>div]:p-3 [&>*>div]:gap-3 [&>*>div>div]:flex [&>*>div>div]:flex-col [&>*>div>div>button]:ml-30 [&>*>div>div]:gap-2 [&>*>div>img]:w-[6.5rem] [&>*>div>img]:h-[6.5rem] [&>*>div>h3]:text-nowrap [&>*>div>h3]:text-gray-500 [&>*>div>div>p]:text-sm [&>*>div>div>p]:text-gray-600 [&>*>div>div>p]:text-wrap [&>*>div>div>button]:bg-[#346734] [&>*>div>div>button]:text-xs [&>*>div>div>button]:text-white [&>*>div>div>button]:font-semibold [&>*>div>div>button]:px-2 [&>*>div>div>button]:py-1 [&>*>div>div>button]:p-[0.08rem] [&>*>div>div>button]:w-[7rem] [&>*>div>div>button]:rounded-xs [&>*>div>div>button]:hover:bg-green-700 [&>*>div>div>button]:active:rounded-sm"
           >
-            <div>
-              <div>
-                <img
-                  alt="Common Small Harmonizer"
-                  src="./images/quantum1.png"
-                />
-                <div>
-                  <h3>Common Small Harmonizer</h3>
-                  <p>
-                    This common small harmonizer is a powerful tool for
-                    harmonizing the quantum field.
-                  </p>
-                  <button>
-                    <p class="">ADD TO ORDER</p>
-                  </button>
-                </div>
-              </div>
-            </div>
+            <?php
+            require_once 'db_connection.php';
 
-            <div>
-              <div>
-                <img
-                  alt="Common Small Harmonizer"
-                  src="./images/quantum1.png"
-                />
-                <div>
-                  <h3>Advanced Small Harmonizer</h3>
-                  <p>
-                    This advanced small harmonizer is a powerful tool for
-                    harmonizing the quantum field.
-                  </p>
-                  <button>
-                    <p class="">ADD TO ORDER</p>
-                  </button>
-                </div>
-              </div>
-            </div>
+            $selectedCategory = isset($_SESSION['selectedCategory']) ? $_SESSION['selectedCategory'] : 'Quantum Harmonizing';
+            $selectedSubcategory = isset($_GET['subcategory']) ? $_GET['subcategory'] : '';
+            $products = $conn->query("SELECT * FROM products WHERE subcategory = '" . 
+                $conn->real_escape_string($selectedSubcategory) . "'");
+
+            if ($products->num_rows > 0) {
+                while($product = $products->fetch_assoc()) {
+                    echo "<div>
+                            <div>
+                                <img alt='" . $product['name']. "'
+                                     src='" . $product['imageURL']. "'/>
+                                <div>
+                                    <h3>" . $product['name']. "</h3>
+                                    <p>" . $product['description']. "</p>
+                                    <button>
+                                        <p>ADD TO ORDER</p>
+                                    </button>
+                                </div>
+                            </div>
+                          </div>";
+                }
+            } else {
+                echo "<p>No products found for this subcategory.</p>";
+            }
+            ?>
           </div>
         </div>
       </main>
