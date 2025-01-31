@@ -1,6 +1,6 @@
 <?php
-  include "db_connection.php";
-  session_start();
+session_start();
+require_once 'functions.php';
 ?>
 
 <!DOCTYPE html>
@@ -242,7 +242,7 @@
         id="sideBar"
         class="w-1/7 h-screen border-r border-gray-400 m-2 mr-5 text-nowrap"
       >
-        <div class="flex justify-start items-start flex-col px-3">
+      <div class="flex justify-start items-start flex-col px-3">
           <header class="text-sm text-nowrap font-regular mb-1">
             Choose a Category
           </header>
@@ -250,84 +250,35 @@
           <ul
             class="flex w-full space-x-4 space-y-2 flex-col text-xs mt-2 text-gray-800 [&>*]:hover:bg-yellow-100 [&>*]:hover:cursor-pointer [&>*]:hover:underline [&>*]:pb-2 [&>*]:active:bg-yellow-300 [&>*]:active:underline"
           >
-          <?php
-              $categories = $conn->query("SELECT * FROM categories");
-              $selectedCategory = isset($_GET['category']) ? $_GET['category'] : 'Quantum Harmonizing';
-              $_SESSION['selectedCategory'] = $selectedCategory;
-              
-              foreach ($categories as $category) {
-                $isActive = ($category['category'] === $selectedCategory) ? 'bg-yellow-100' : '';
-                echo "<li class='{$isActive}'><a href='?category=" . urlencode($category['category']) . "'>{$category['category']}</a></li>";
-              }
-            ?>
-          </ul>
+            <?php 
+              $categories = displayCategories();
+          if (empty($categories)) {
+              echo "No categories found";
+          } else {
+              echo $categories;
+          }
+        ?>
+        </ul>
         </div>
       </aside>
       <main id="detailedView" class="w-full m-2">
-        <div class="flex justify-start items-start flex-col">
-          <header class="text-sm font-regular mb-1">Chosen Category</header>
-          <hr class="border-[#346734] w-full" />
-          <?php
-            $subcategories = $conn->query("SELECT * FROM subcategories WHERE category = '" . $selectedCategory. "'");
-            if ($subcategories->num_rows > 0) {
-              echo "<div class='flex justify-start items-start flex-col'>
-                      <h1 class='text-lg font-semibold text-[#346734]'>Quantum Harmonizing</h1>
-                      <h3 class='text-xs font-semibold text-gray-500 mb-2'>Harmonizers</h3>
-                      <div class='flex justify-start items-start gap-3 flex-row *:flex-col *:text-center *:text-[0.65rem] *:text-gray-500 *:text-wrap [&>div>a>img]:border-1 [&>div>a>img]:border-gray-200 [&>div>a>img]:w-[4rem] [&>div>a>img]:h-[4rem] [&>div>p]:text-wrap [&>div>p]:w-[4rem]'>";
-              
-              foreach($subcategories as $subcategory) {
-                echo "<div class='flex justify-center items-center'>
-                        <a href='./productCardsPage.php?subcategory=" .$subcategory['subcategory']. "'>
-                          <img src='" .$subcategory['imageURL']. "' 
-                               alt='Image of " .$subcategory['subcategory']. "'/>
-                        </a>
-                        <p>" .$subcategory['subcategory']. "</p>
-                      </div>";
-              }
-
-              echo "</div></div>";
+        <?php
+        if (isset($_GET['view']) && $_GET['view'] === 'products' && isset($_GET['subcategory'])) {
+            $products = displayProducts();
+            if (empty($products)) {
+                echo "No products found";
+            } else {
+                echo $products;
             }
-          ?>
-          <!-- <div class="flex justify-start items-start flex-col">
-            <h1 class="text-lg font-semibold text-[#346734]">
-              Quantum Harmonizing
-            </h1>
-            <h3 class="text-xs font-semibold text-gray-500 mb-2">
-              Harmonizers
-            </h3>
-            <div
-              class="flex justify-start items-start gap-3 flex-row *:flex-col *:text-center *:text-[0.65rem] *:text-gray-500 *:text-wrap [&>div>a>img]:border-1 [&>div>a>img]:border-gray-200 [&>div>a>img]:w-[4rem] [&>div>a>img]:h-[4rem] [&>div>p]:text-wrap [&>div>p]:w-[4rem]"
-            >
-              <div class="flex justify-center items-center">
-                <a href="./productCardsPage.php">
-                  <img
-                    src="./images/quantum1.png"
-                    alt="Image of Small Harmonizer"
-                  />
-                </a>
-                <p>Small Harmonizers</p>
-              </div>
-              <div class="flex justify-center items-center">
-                <a href="#">
-                  <img
-                    src="./images/quantum2.png"
-                    alt="Image of Medium Harmonizer"
-                  />
-                </a>
-                <p>Medium Harmonizers</p>
-              </div>
-              <div class="flex justify-center items-center">
-                <a href="#">
-                  <img
-                    src="./images/quantum3.png"
-                    alt="Image of Large Harmonizer"
-                  />
-                </a>
-                <p>Large Harmonizers</p>
-              </div>
-            </div>
-          </div> -->
-        </div>
+        } else {
+            $mainContent = displayMainContent();
+            if (empty($mainContent)) {
+                echo "No main content found";
+            } else {
+                echo $mainContent;
+            }
+        }
+        ?>
       </main>
     </section>
   </body>
