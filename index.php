@@ -1,3 +1,8 @@
+<?php
+  include "db_connection.php";
+  session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -63,22 +68,50 @@
             <li>|</li>
             <style>
               #login:checked ~ #loginMenu {
-                opacity: 1;
+                display: flex;
+              }
+              #createLogin:checked ~ #createLoginMenu {
+                display: flex;
+              }
+              #login:checked ~ #createLoginMenu {
+                display: none;
+              }
+              #createLogin:checked ~ #loginMenu {
+                display: none;
               }
             </style>
             <li class="relative">
-              <input type="checkbox" id="login" class="hidden peer" />
+              <input
+                type="radio"
+                id="login"
+                name="menuState"
+                class="hidden peer"
+              />
+              <input
+                type="radio"
+                id="createLogin"
+                name="menuState"
+                class="hidden peer"
+              />
+              <input
+                type="radio"
+                id="closeMenu"
+                name="menuState"
+                class="hidden peer"
+                checked
+              />
               <label for="login" class="hover:underline cursor-pointer"
                 >Log in ▼</label
               >
+
               <div
                 id="loginMenu"
-                class="absolute w-[20rem] mt-3 mr-3 px-7 py-5 right-1 top-full min-w-max drop-shadow-2xl opacity-0 bg-white border-t-2 border-yellow-500 transition delay-75 ease-in-out z-10 peer-checked:opacity-100 flex flex-col p-4 gap-3"
+                class="hidden absolute w-[20rem] mt-3 mr-3 px-7 py-5 right-1 top-full min-w-max drop-shadow-2xl bg-white border-t-2 border-yellow-500 transition delay-75 ease-in-out z-10 flex-col p-4 gap-3"
               >
                 <div class="flex justify-between items-center mb-2">
                   <h2 class="font-bold text-lg text-[#346734]">Log in</h2>
                   <label
-                    for="login"
+                    for="closeMenu"
                     class="text-gray-500 hover:text-gray-600 text-xl cursor-pointer"
                   >
                     &cross;
@@ -117,12 +150,78 @@
                   >
                     Log in
                   </button>
+                  <label
+                    for="createLogin"
+                    class="border border-[#346734] text-center text-[#346734] py-1 rounded-sm hover:bg-green-50 cursor-pointer"
+                  >
+                    Create login
+                  </label>
+                </div>
+              </div>
+
+              <div
+                id="createLoginMenu"
+                class="hidden absolute w-[20rem] mt-3 mr-3 px-7 py-5 right-1 top-full min-w-max drop-shadow-2xl bg-white border-t-2 border-yellow-500 transition delay-75 ease-in-out z-10 flex-col p-4 gap-3"
+              >
+                <div class="flex justify-between items-center mb-2">
+                  <h2 class="font-bold text-lg text-[#346734]">Create login</h2>
+                  <label
+                    for="closeMenu"
+                    class="text-gray-500 hover:text-gray-600 text-xl cursor-pointer"
+                  >
+                    &cross;
+                  </label>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    class="px-3 py-2 border-1 border-gray-500"
+                  />
+                </div>
+                <div class="flex flex-col gap-1">
+                  <input
+                    type="text"
+                    placeholder="Email"
+                    class="px-3 py-2 border-1 border-gray-500"
+                  />
+                </div>
+                <div class="flex flex-col gap-1">
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    class="px-3 py-2 border-1 border-gray-500"
+                  />
+                </div>
+                <div class="flex justify-between items-center py-2">
+                  <div class="flex items-center gap-2">
+                    <input type="checkbox" id="agreeToTerms" />
+                    <label for="agreeToTerms" class="text-xs"
+                      >I agree to
+                      <a href="#" class="underline"
+                        >Terms and Conditions</a
+                      ></label
+                    >
+                  </div>
+                  <a
+                    href="#"
+                    class="text-gray-500 hover:bg-yellow-200 text-xs underline"
+                    >Reset Password</a
+                  >
+                </div>
+                <div class="flex flex-col gap-2">
                   <button
-                    class="border border-[#346734] text-[#346734] py-1 rounded-sm hover:bg-green-50"
+                    class="bg-[#346734] text-white py-1 rounded-sm hover:bg-green-700"
                   >
                     Create login
                   </button>
                 </div>
+                <label
+                  for="login"
+                  class="text-xs underline text-gray-500 cursor-pointer"
+                >
+                  Back to login
+                </label>
               </div>
             </li>
           </ul>
@@ -151,18 +250,45 @@
           <ul
             class="flex w-full space-x-4 space-y-2 flex-col text-xs mt-2 text-gray-800 [&>*]:hover:bg-yellow-100 [&>*]:hover:cursor-pointer [&>*]:hover:underline [&>*]:pb-2 [&>*]:active:bg-yellow-300 [&>*]:active:underline"
           >
-            <li><a href="#">Quantum Harmonizing</a></li>
-            <li><a href="#">Void Anchoring & Stabilization</a></li>
-            <li><a href="#">Temporal Flux & Phasing</a></li>
-            <li><a href="#">Molecular Binding & Fusion</a></li>
+          <?php
+              $categories = $conn->query("SELECT * FROM categories");
+              $selectedCategory = isset($_GET['category']) ? $_GET['category'] : 'Quantum Harmonizing';
+              $_SESSION['selectedCategory'] = $selectedCategory;
+              
+              foreach ($categories as $category) {
+                $isActive = ($category['category'] === $selectedCategory) ? 'bg-yellow-100' : '';
+                echo "<li class='{$isActive}'><a href='?category=" . urlencode($category['category']) . "'>{$category['category']}</a></li>";
+              }
+            ?>
           </ul>
         </div>
       </aside>
       <main id="detailedView" class="w-full m-2">
         <div class="flex justify-start items-start flex-col">
-          <header class="text-sm font-regular mb-1">All categories</header>
+          <header class="text-sm font-regular mb-1">Chosen Category</header>
           <hr class="border-[#346734] w-full" />
-          <div class="flex justify-start items-start flex-col">
+          <?php
+            $subcategories = $conn->query("SELECT * FROM subcategories WHERE category = '" . $selectedCategory. "'");
+            if ($subcategories->num_rows > 0) {
+              echo "<div class='flex justify-start items-start flex-col'>
+                      <h1 class='text-lg font-semibold text-[#346734]'>Quantum Harmonizing</h1>
+                      <h3 class='text-xs font-semibold text-gray-500 mb-2'>Harmonizers</h3>
+                      <div class='flex justify-start items-start gap-3 flex-row *:flex-col *:text-center *:text-[0.65rem] *:text-gray-500 *:text-wrap [&>div>a>img]:border-1 [&>div>a>img]:border-gray-200 [&>div>a>img]:w-[4rem] [&>div>a>img]:h-[4rem] [&>div>p]:text-wrap [&>div>p]:w-[4rem]'>";
+              
+              foreach($subcategories as $subcategory) {
+                echo "<div class='flex justify-center items-center'>
+                        <a href='./productCardsPage.php?subcategory=" .$subcategory['subcategory']. "'>
+                          <img src='" .$subcategory['imageURL']. "' 
+                               alt='Image of " .$subcategory['subcategory']. "'/>
+                        </a>
+                        <p>" .$subcategory['subcategory']. "</p>
+                      </div>";
+              }
+
+              echo "</div></div>";
+            }
+          ?>
+          <!-- <div class="flex justify-start items-start flex-col">
             <h1 class="text-lg font-semibold text-[#346734]">
               Quantum Harmonizing
             </h1>
@@ -173,7 +299,7 @@
               class="flex justify-start items-start gap-3 flex-row *:flex-col *:text-center *:text-[0.65rem] *:text-gray-500 *:text-wrap [&>div>a>img]:border-1 [&>div>a>img]:border-gray-200 [&>div>a>img]:w-[4rem] [&>div>a>img]:h-[4rem] [&>div>p]:text-wrap [&>div>p]:w-[4rem]"
             >
               <div class="flex justify-center items-center">
-                <a href="./productCardsPage.html">
+                <a href="./productCardsPage.php">
                   <img
                     src="./images/quantum1.png"
                     alt="Image of Small Harmonizer"
@@ -200,7 +326,7 @@
                 <p>Large Harmonizers</p>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </main>
     </section>
