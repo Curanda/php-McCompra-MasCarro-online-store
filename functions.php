@@ -191,10 +191,14 @@ function displayOrder() {
             $output .= '<h1 class="text-gray-700">' . htmlspecialchars($ordered_product['name']) . '</h1>';
             $output .= '<div class="flex flex-row justify-between items-center">';
             $output .= '<p class="text-sm text-gray-500">Quantity: ' . $ordered_product['quantity'] . '</p>';
-            $output .= '<div class="flex flex-col justify-between items-center ml-3  [&>*]:border-1 [&>*]:border-gray-300 [&>*]:bg-gray-200 [&>*]:text-[0.5rem] [&>*]:text-black [&>*]:cursor-pointer">';
-            $output .= '<button id="increaseQuantity">▲</button>';
-            $output .= '<button id="decreaseQuantity">▼</button>';
-            $output .= '</div>';
+            $output .= '<form action="order.php" method="post" class="flex flex-col justify-between items-center ml-3  [&>*]:border-1 [&>*]:border-gray-300 [&>*]:bg-gray-200 [&>*]:text-[0.5rem] [&>*]:text-black [&>*]:cursor-pointer">';
+            $output .= '<button href="?view=order" type="submit" name="increaseQuantity" id="increaseQuantity" value="' . $product_id . '">
+            ▲
+            </button>';
+            $output .= '<button href="?view=order" type="submit" name="decreaseQuantity" id="decreaseQuantity" value="' . $product_id . '">
+            ▼
+            </button>';
+            $output .= '</form>';
             $output .= '</div>';
             $output .= '</div>';
             $output .= '</div>';

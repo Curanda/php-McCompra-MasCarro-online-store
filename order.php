@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'functions.php';
 
 if (isset($_POST['product_id']) && isset($_POST['product_name']) && isset($_POST['product_price'])) {
     $product_id = $_POST['product_id'];
@@ -27,5 +28,26 @@ if (isset($_POST['product_id']) && isset($_POST['product_name']) && isset($_POST
         }
     }
 }
+
+if (isset($_POST['increaseQuantity'])) {
+    $product_id = $_POST['increaseQuantity'];
+    $_SESSION['order'][$product_id]['quantity']++;
+    header('Location: indexLoggedIn.php?view=order');
+    exit;
+}
+
+if (isset($_POST['decreaseQuantity'])) {
+    $product_id = $_POST['decreaseQuantity'];
+    if ($_SESSION['order'][$product_id]['quantity'] > 1) {
+        $_SESSION['order'][$product_id]['quantity']--;
+        header('Location: indexLoggedIn.php?view=order');
+        exit;
+    } else {
+        unset($_SESSION['order'][$product_id]);
+        header('Location: indexLoggedIn.php?view=order');
+        exit;
+    }
+}
+
 exit;
 ?>
