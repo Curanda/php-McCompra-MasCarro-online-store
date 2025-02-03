@@ -282,5 +282,6 @@ require_once 'db_connection.php';
         ?>
       </main>
     </section>
+    <iframe name='noRerenderOnAddToOrderClick' style='display:none;'></iframe>
   </body>
 </html>

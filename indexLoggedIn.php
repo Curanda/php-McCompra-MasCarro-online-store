@@ -122,7 +122,7 @@ require_once 'db_connection.php';
           </ul>
           <div class="flex gap-10 justify-end items-end w-full">
             <button class="text-[#346734] font-bold py-2 rounded-md">
-              ORDER
+              <a href="?view=order">ORDER</a>
             </button>
             <button class="text-[#346734] font-bold py-2 rounded-md">
               ORDER HISTORY
@@ -158,23 +158,20 @@ require_once 'db_connection.php';
       </aside>
       <main id="detailedView" class="w-full m-2">
         <?php
-        if (isset($_GET['view']) && $_GET['view'] === 'products' && isset($_GET['subcategory'])) {
-            $products = displayProducts();
-            if (empty($products)) {
-                echo "No products found";
-            } else {
-                echo $products;
+        if (isset($_GET['view'])) {
+            if ($_GET['view'] === 'order') {
+                echo displayOrder();
+            } else if ($_GET['view'] === 'products' && isset($_GET['subcategory'])) {
+                $products = displayProducts();
+                echo empty($products) ? "No products found" : $products;
             }
         } else {
             $mainContent = displayMainContent();
-            if (empty($mainContent)) {
-                echo "No main content found";
-            } else {
-                echo $mainContent;
-            }
+            echo empty($mainContent) ? "No main content found" : $mainContent;
         }
         ?>
       </main>
     </section>
+    <iframe name='noRerenderOnAddToOrderClick' style='display:none;'></iframe>
   </body>
 </html>
