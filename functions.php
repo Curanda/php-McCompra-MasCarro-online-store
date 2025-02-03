@@ -1,22 +1,14 @@
 <?php
+require_once 'db_connection.php';
 session_start();
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
-// Database connection
-$conn = new mysqli('localhost', 'root', '', 'mccompra_mascarro');
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Category Functions
 function getCategories() {
     global $conn;
     $result = $conn->query("SELECT * FROM categories");
     if (!$result) {
         die("Query failed: " . $conn->error);
     }
-    return $result->fetch_all(MYSQLI_ASSOC); // Convert result to array
+    return $result->fetch_all(MYSQLI_ASSOC);
 }
 
 function getSelectedCategory() {
@@ -46,7 +38,6 @@ function displayCategories() {
     return $output;
 }
 
-// Subcategory Functions
 function getSubcategories($category) {
     global $conn;
     $result = $conn->query("SELECT * FROM subcategories WHERE category = '" . 
@@ -54,7 +45,7 @@ function getSubcategories($category) {
     if (!$result) {
         die("Query failed: " . $conn->error);
     }
-    return $result->fetch_all(MYSQLI_ASSOC); // Convert result to array
+    return $result->fetch_all(MYSQLI_ASSOC);
 }
 
 function displaySubcategories() {
@@ -77,7 +68,7 @@ function displaySubcategories() {
     return "<p>No subcategories found for " . htmlspecialchars($selectedCategory) . "</p>";
 }
 
-// Product Functions
+
 function getProducts($subcategory) {
     global $conn;
     $result = $conn->query("SELECT * FROM products WHERE subcategory = '" . 
@@ -85,7 +76,7 @@ function getProducts($subcategory) {
     if (!$result) {
         die("Query failed: " . $conn->error);
     }
-    return $result->fetch_all(MYSQLI_ASSOC); // Convert result to array
+    return $result->fetch_all(MYSQLI_ASSOC);
 }
 
 function displayProducts() {
@@ -144,8 +135,7 @@ function displayMainContent() {
     $selectedCategory = getSelectedCategory();
     
     $output = '<div class="flex justify-start items-start flex-col">';
-    
-    // Only show the active category's content
+
     foreach ($categories as $category) {
         if ($category['category'] === $selectedCategory) {
             $output .= '<h1 class="text-lg font-semibold text-[#346734]">' . htmlspecialchars($category['category']) . '</h1>';
@@ -159,7 +149,7 @@ function displayMainContent() {
                 }
                 $output .= '</div>';
             }
-            break; // Exit the loop after showing the active category
+            break;
         }
     }
     
@@ -167,7 +157,6 @@ function displayMainContent() {
     return $output;
 }
 
-// Add some debug output
 echo "<!-- Database connection successful -->\n";
 $cats = getCategories();
 echo "<!-- Found " . count($cats) . " categories -->\n";

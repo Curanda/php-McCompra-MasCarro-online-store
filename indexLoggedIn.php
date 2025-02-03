@@ -71,26 +71,11 @@ require_once 'db_connection.php';
               #login:checked ~ #loginMenu {
                 display: flex;
               }
-              #createLogin:checked ~ #createLoginMenu {
-                display: flex;
-              }
-              #login:checked ~ #createLoginMenu {
-                display: none;
-              }
-              #createLogin:checked ~ #loginMenu {
-                display: none;
-              }
             </style>
             <li class="relative">
               <input
                 type="radio"
                 id="login"
-                name="menuState"
-                class="hidden peer"
-              />
-              <input
-                type="radio"
-                id="createLogin"
                 name="menuState"
                 class="hidden peer"
               />
@@ -102,14 +87,19 @@ require_once 'db_connection.php';
                 checked
               />
               <label for="login" class="hover:underline cursor-pointer"
-                >Log in ▼</label
+                > <?php echo $_SESSION['username'] ?> ▼</label
               >
-                <form id="loginMenu" action="login.php" method="post" 
+
+
+                <form
+                id="loginMenu"
                 class="hidden absolute w-[20rem] mt-3 mr-3 px-7 py-5 right-1 top-full min-w-max drop-shadow-2xl bg-white border-t-2 border-yellow-500 transition delay-75 ease-in-out z-10 flex-col p-4 gap-3"
+
+                action="logout.php" method="post" 
                 >
 
                 <div class="flex justify-between items-center mb-2">
-                  <h2 class="font-bold text-lg text-[#346734]">Log in</h2>
+                  <h2 class="font-bold text-lg text-[#346734]">User Menu</h2>
                   <label
                     for="closeMenu"
                     class="text-gray-500 hover:text-gray-600 text-xl cursor-pointer"
@@ -117,113 +107,17 @@ require_once 'db_connection.php';
                     &cross;
                   </label>
                 </div>
-                <div class="flex flex-col gap-3">
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    class="px-3 py-2 border-1 border-gray-500"
-                    name="email"
-                  />
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    class="px-3 py-2 border-1 border-gray-500"
-                    name="password"
-                  />
-                </div>
-                <div class="flex justify-between items-center py-2">
-                  <div class="flex items-center gap-2">
-                    <input type="checkbox" id="stayLoggedIn" name="stayLoggedIn" />
-                    <label for="stayLoggedIn" class="text-xs"
-                      >Stay logged in</label
-                    >
-                  </div>
-                  <a
-                    href="#"
-                    class="text-gray-500 hover:bg-yellow-200 text-xs underline"
-                    >Reset Password</a
-                  >
-                </div>
                 <div class="flex flex-col gap-2">
-                  <button
-                    type="submit"
-                    class="bg-[#346734] text-white py-1 rounded-sm hover:bg-green-700"
-                  >
-                    Log in
-                  </button>
-                  <label
-                    for="createLogin"
-                    class="border border-[#346734] text-center text-[#346734] py-1 rounded-sm hover:bg-green-50 cursor-pointer"
-                  >
-                    Create login
-                  </label>
+                    <form action="logout.php" method="post">
+                        <button
+                        type="submit"
+                        class="bg-[#346734] text-white py-1 rounded-sm hover:bg-green-700"
+                        >
+                        Log out
+                        </button>
+                    </form>
                 </div>
                 </form>
-
-              <div
-                id="createLoginMenu"
-                class="hidden absolute w-[20rem] mt-3 mr-3 px-7 py-5 right-1 top-full min-w-max drop-shadow-2xl bg-white border-t-2 border-yellow-500 transition delay-75 ease-in-out z-10 flex-col p-4 gap-3"
-              >
-                <div class="flex justify-between items-center mb-2">
-                  <h2 class="font-bold text-lg text-[#346734]">Create login</h2>
-                  <label
-                    for="closeMenu"
-                    class="text-gray-500 hover:text-gray-600 text-xl cursor-pointer"
-                  >
-                    &cross;
-                  </label>
-                </div>
-                <div class="flex flex-col gap-1">
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    class="px-3 py-2 border-1 border-gray-500"
-                  />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <input
-                    type="text"
-                    placeholder="Email"
-                    class="px-3 py-2 border-1 border-gray-500"
-                  />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    class="px-3 py-2 border-1 border-gray-500"
-                  />
-                </div>
-                <div class="flex justify-between items-center py-2">
-                  <div class="flex items-center gap-2">
-                    <input type="checkbox" id="agreeToTerms" />
-                    <label for="agreeToTerms" class="text-xs"
-                      >I agree to
-                      <a href="#" class="underline"
-                        >Terms and Conditions</a
-                      ></label
-                    >
-                  </div>
-                  <a
-                    href="#"
-                    class="text-gray-500 hover:bg-yellow-200 text-xs underline"
-                    >Reset Password</a
-                  >
-                </div>
-                <div class="flex flex-col gap-2">
-                  <button
-                    class="bg-[#346734] text-white py-1 rounded-sm hover:bg-green-700"
-                  >
-                    Create login
-                  </button>
-                </div>
-                <label
-                  for="login"
-                  class="text-xs underline text-gray-500 cursor-pointer"
-                >
-                  Back to login
-                </label>
-              </div>
             </li>
           </ul>
           <div class="flex gap-10 justify-end items-end w-full">
