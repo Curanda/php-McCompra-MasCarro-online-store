@@ -93,5 +93,10 @@ if (isset($_POST['checkout'])) {
     }
 }
 
+if (isset($_POST['redirect'])) {
+    header('Location: indexLoggedIn.php?view=' . $_POST['redirect']);
+    exit;
+}
+
 exit;
 ?>

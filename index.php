@@ -172,8 +172,7 @@ if (isset($_COOKIE['mccompracookie'])) {
                 </div>
                 </form>
 
-              <div
-                id="createLoginMenu"
+              <form id="createLoginMenu" action="createLogin.php" method="post" 
                 class="hidden absolute w-[20rem] mt-3 mr-3 px-7 py-5 right-1 top-full min-w-max drop-shadow-2xl bg-white border-t-2 border-yellow-500 transition delay-75 ease-in-out z-10 flex-col p-4 gap-3"
               >
                 <div class="flex justify-between items-center mb-2">
@@ -188,27 +187,35 @@ if (isset($_COOKIE['mccompracookie'])) {
                 <div class="flex flex-col gap-1">
                   <input
                     type="text"
+                    required
                     placeholder="Name"
                     class="px-3 py-2 border-1 border-gray-500"
+                    name="name"
                   />
                 </div>
                 <div class="flex flex-col gap-1">
                   <input
-                    type="text"
+                    type="email"
+                    required
                     placeholder="Email"
                     class="px-3 py-2 border-1 border-gray-500"
+                    name="email"
                   />
+
                 </div>
                 <div class="flex flex-col gap-1">
                   <input
                     type="password"
+                    required
                     placeholder="Password"
                     class="px-3 py-2 border-1 border-gray-500"
+                    name="password"
                   />
+                  <p class="text-xs text-gray-400">Must be at least 8 characters long.</p>
                 </div>
                 <div class="flex justify-between items-center py-2">
                   <div class="flex items-center gap-2">
-                    <input type="checkbox" id="agreeToTerms" />
+                    <input required type="checkbox" id="agreeToTerms" />
                     <label for="agreeToTerms" class="text-xs"
                       >I agree to
                       <a href="#" class="underline"
@@ -216,18 +223,18 @@ if (isset($_COOKIE['mccompracookie'])) {
                       ></label
                     >
                   </div>
-                  <a
-                    href="#"
-                    class="text-gray-500 hover:bg-yellow-200 text-xs underline"
-                    >Reset Password</a
-                  >
                 </div>
                 <div class="flex flex-col gap-2">
                   <button
-                    class="bg-[#346734] text-white py-1 rounded-sm hover:bg-green-700"
+                    type="submit"
+                    name="createLogin"
+                    class="bg-[#346734] text-white py-1 rounded-xs hover:bg-green-700 py-2"
                   >
                     Create login
                   </button>
+                  <?php if (isset($_SESSION['createLogin_error'])):
+                    echo "<p class='text-red-500 text-xs'>" . $_SESSION['createLogin_error'] . "</p>";
+                  endif; ?>
                 </div>
                 <label
                   for="login"
@@ -235,7 +242,7 @@ if (isset($_COOKIE['mccompracookie'])) {
                 >
                   Back to login
                 </label>
-              </div>
+              </form>
             </li>
           </ul>
           <div class="flex gap-10 justify-end items-end w-full">

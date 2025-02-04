@@ -44,26 +44,6 @@ function getSubcategories($category) {
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-function displaySubcategories() {
-    $selectedCategory = getSelectedCategory();
-    $subcategories = getSubcategories($selectedCategory);
-    
-    if (!empty($subcategories)) {
-        $output = "<div class='flex justify-start items-start flex-col'>
-                    <h1 class='text-lg font-semibold text-[#346734]'>" . htmlspecialchars($selectedCategory) . "</h1>
-                    <h3 class='text-xs font-semibold text-gray-500 mb-2'>Harmonizers</h3>
-                    <div class='flex justify-start items-start gap-3 flex-row *:flex-col *:text-center *:text-[0.65rem] *:text-gray-500 *:text-wrap [&>div>a>img]:border-1 [&>div>a>img]:border-gray-200 [&>div>a>img]:w-[4rem] [&>div>a>img]:h-[4rem] [&>div>p]:text-wrap [&>div>p]:w-[4rem]'>";
-        
-        foreach($subcategories as $subcategory) {
-            $output .= renderSubcategoryItem($subcategory);
-        }
-        
-        $output .= "</div></div>";
-        return $output;
-    }
-    return "<p>No subcategories found for " . htmlspecialchars($selectedCategory) . "</p>";
-}
-
 
 function getProducts($subcategory) {
     global $conn;
@@ -108,6 +88,8 @@ function renderSubcategoryItem($subcategory) {
 }
 
 function renderProductCard($product) {
+    $currentView = isset($_GET['subcategory']) ? '&subcategory=' . urlencode($_GET['subcategory']) : '';
+
     return "<div>
                 <div>
                     <img alt='" . htmlspecialchars($product['name']) . "'
@@ -115,11 +97,12 @@ function renderProductCard($product) {
                     <div>
                         <h3>" . htmlspecialchars($product['name']) . "</h3>
                         <p>" . htmlspecialchars($product['description']) . "</p>
-                        <form action='order.php' target='noRerenderOnAddToOrderClick' method='post' class='flex justify-between items-center'>
+                        <form action='order.php'  method='post' class='flex justify-between items-center'>
                             <p class='text-sm ml-2 text-gray-500'>" . htmlspecialchars($product['price']) . "$</p>
                             <input type='hidden' name='product_id' value='" . htmlspecialchars($product['id']) . "'>
                             <input type='hidden' name='product_price' value='" . htmlspecialchars($product['price']) . "'>
                             <input type='hidden' name='product_name' value='" .$product['name']. "'>
+                            <input type='hidden' name='redirect' value='products" . $currentView . "'>
                             <button type='submit' class='bg-[#346734] text-xs text-white font-semibold px-2 py-1 p-[0.08rem] w-[7rem] rounded-xs hover:bg-green-700 active:rounded-sm'>
                                 <p>ADD TO ORDER</p>
                             </button>
@@ -169,7 +152,7 @@ function displayOrder() {
     if (isset($_SESSION['user_id'])) {
         $output = '<div class="flex justify-start items-start flex-col">';
         $output .= '<h1 class="text-md font-semibold text-gray-700">Order</h1>';
-        $output .= '<hr class="border-[#346734] w-full mb-4" />';
+        $output .= '<hr class="border-[#346734] w-full my-2" />';
         $output .= '<div class="flex flex-row justify-between items-start w-full">';
         $output .= '<div class="flex flex-col gap-4 w-1/3">';
     } else {
@@ -178,7 +161,7 @@ function displayOrder() {
         $output .= '<h1 class="text-md font-semibold text-gray-700">Order</h1>';
         $output .= '<p class="text-red-400 mr-3">Please login to checkout</p>';
         $output .= '</div>';
-        $output .= '<hr class="border-[#346734] w-full mb-4" />';
+        $output .= '<hr class="border-[#346734] w-full my-2" />';
         $output .= '<div class="flex flex-row justify-between items-start w-full">';
         $output .= '<div class="flex flex-col gap-4 w-1/3">';
     }
