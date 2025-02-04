@@ -63,9 +63,9 @@ require_once 'db_connection.php';
           <ul
             class="flex space-x-4 text-xs text-gray-600 [&>*]:hover:underline"
           >
-            <li><a href="#">(630) 833-0300</a></li>
+            <li><a href="tel:6308001234">(630) 800-1234</a></li>
             <li>|</li>
-            <li><a href="#"> Email Us</a></li>
+            <li><a href="mailto:mccompramasccarro@gmail.com">Email Us</a></li>
             <li>|</li>
             <style>
               #login:checked ~ #loginMenu {
@@ -93,7 +93,7 @@ require_once 'db_connection.php';
 
                 <form
                 id="loginMenu"
-                class="hidden absolute w-[20rem] mt-3 mr-3 px-7 py-5 right-1 top-full min-w-max drop-shadow-2xl bg-white border-t-2 border-yellow-500 transition delay-75 ease-in-out z-10 flex-col p-4 gap-3"
+                class="hidden absolute w-[16rem] mt-3 mr-3 px-7 py-5 right-1 top-full min-w-max drop-shadow-2xl bg-white border-t-2 border-yellow-500 transition delay-75 ease-in-out z-10 flex-col p-4 gap-3"
 
                 action="logout.php" method="post" 
                 >
@@ -121,8 +121,16 @@ require_once 'db_connection.php';
             </li>
           </ul>
           <div class="flex gap-10 justify-end items-end w-full">
-            <button class="text-[#346734] font-bold py-2 rounded-md">
+            <button class="text-[#346734] font-bold py-2 rounded-md relative">
               <a href="?view=order">ORDER</a>
+              <?php
+              if (isset($_SESSION['order']) && !empty($_SESSION['order'])) {
+                  $countIds = count($_SESSION['order']);
+                  echo '<span class="absolute top-1 -right-3 bg-yellow-300 text-xs text-[#346734] rounded-full h-4 w-4 flex items-center justify-center">' 
+                       . $countIds . 
+                       '</span>';
+              }
+              ?>
             </button>
             <button class="text-[#346734] font-bold py-2 rounded-md">
               <a href="?view=orderhistory">ORDER HISTORY</a>

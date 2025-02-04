@@ -2,6 +2,13 @@
 session_start();
 require_once 'functions.php';
 require_once 'db_connection.php';
+require_once 'login.php';
+
+if (isset($_COOKIE['mccompracookie'])) {
+    $mccompracookie = json_decode($_COOKIE['mccompracookie'], true);
+    loginUser($mccompracookie['email'], $mccompracookie['password']);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -120,16 +127,21 @@ require_once 'db_connection.php';
                 <div class="flex flex-col gap-3">
                   <input
                     type="email"
+                    required
                     placeholder="Email"
                     class="px-3 py-2 border-1 border-gray-500"
                     name="email"
                   />
                   <input
                     type="password"
+                    required
                     placeholder="Password"
                     class="px-3 py-2 border-1 border-gray-500"
                     name="password"
                   />
+                  <?php if (isset($_SESSION['login_error'])):
+                    echo "<p class='text-red-500 text-xs'>" . $_SESSION['login_error'] . "</p>";
+                  endif; ?>
                 </div>
                 <div class="flex justify-between items-center py-2">
                   <div class="flex items-center gap-2">
@@ -228,7 +240,15 @@ require_once 'db_connection.php';
           </ul>
           <div class="flex gap-10 justify-end items-end w-full">
             <button class="text-[#346734] font-bold py-2 rounded-md">
-              ORDER
+            <a href="?view=order">ORDER</a>
+            <?php
+              if (isset($_SESSION['order']) && !empty($_SESSION['order'])) {
+                  $countIds = count($_SESSION['order']);
+                  echo '<span class="absolute top-1 -right-3 bg-yellow-300 text-xs text-[#346734] rounded-full h-4 w-4 flex items-center justify-center">' 
+                       . $countIds . 
+                       '</span>';
+              }
+              ?>
             </button>
             <button class="text-[#346734] font-bold py-2 rounded-md">
               ORDER HISTORY
@@ -271,6 +291,8 @@ require_once 'db_connection.php';
             } else {
                 echo $products;
             }
+        } else if (isset($_GET['view']) && $_GET['view'] === 'order') {
+            echo displayOrder();
         } else {
             $mainContent = displayMainContent();
             if (empty($mainContent)) {

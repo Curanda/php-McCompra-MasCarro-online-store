@@ -11,7 +11,7 @@ function getCategories() {
 }
 
 function getSelectedCategory() {
-    $default = 'Quantum Harmonizers';
+    $default = 'Quantum Harmonizing';
     $selected = isset($_GET['category']) ? $_GET['category'] : $default;
     $_SESSION['selectedCategory'] = $selected;
     return $selected;
@@ -165,12 +165,23 @@ function displayOrder() {
                 </div>';
     }
 
-    $output = '<div class="flex justify-start items-start flex-col">';
-    $output .= '<h1 class="text-md font-semibold text-gray-700">Order</h1>';
-    $output .= '<hr class="border-[#346734] w-full mb-4" />';
-    $output .= '<div class="flex flex-row justify-between items-start w-full">';
-    $output .= '<div class="flex flex-col gap-4 w-1/3">';
 
+    if (isset($_SESSION['user_id'])) {
+        $output = '<div class="flex justify-start items-start flex-col">';
+        $output .= '<h1 class="text-md font-semibold text-gray-700">Order</h1>';
+        $output .= '<hr class="border-[#346734] w-full mb-4" />';
+        $output .= '<div class="flex flex-row justify-between items-start w-full">';
+        $output .= '<div class="flex flex-col gap-4 w-1/3">';
+    } else {
+        $output = '<div class="flex justify-start items-start flex-col">';
+        $output .= '<div class="flex flex-row justify-between items-between w-full">';
+        $output .= '<h1 class="text-md font-semibold text-gray-700">Order</h1>';
+        $output .= '<p class="text-red-400 mr-3">Please login to checkout</p>';
+        $output .= '</div>';
+        $output .= '<hr class="border-[#346734] w-full mb-4" />';
+        $output .= '<div class="flex flex-row justify-between items-start w-full">';
+        $output .= '<div class="flex flex-col gap-4 w-1/3">';
+    }
     $total = 0;
 
     foreach ($_SESSION['order'] as $product_id => $ordered_product) {
@@ -215,7 +226,8 @@ function displayOrder() {
         unset($_SESSION['order_error']);
     }
 
-    $output .= '<div class="w-1/3 border-1 px-5 py-3 border-[#346734] flex flex-col justify-start items-start">
+    if (isset($_SESSION['user_id'])) {
+        $output .= '<div class="w-1/3 border-1 px-5 py-3 border-[#346734] flex flex-col justify-start items-start">
       <h1>Checkout</h1>
       <hr class="border-[#346734] w-full my-4 border-1" />
       <form action="order.php" method="post" class="w-full flex flex-col justify-center items-start gap-4 [&>input]:border-1 [&>input]:border-gray-300 [&>input]:px-2 [&>input]:py-1 [&>input]:text-sm [&>input]:text-gray-500 [&>input]:w-full">
@@ -247,6 +259,10 @@ function displayOrder() {
         </div>
       </form>
     </div>';
+    } else {
+        
+        $output .= '<p></p>';
+    }
     $output .= '</div>';
     $output .= '</div>';
     return $output;
@@ -303,6 +319,8 @@ function displayOrderHistory() {
     $output .= '</div>';
     return $output;
 }
+
+
 
 
 ?>
