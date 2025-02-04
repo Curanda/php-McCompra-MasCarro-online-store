@@ -1,14 +1,13 @@
 <?php
-require_once 'db_connection.php';
 session_start();
+require_once 'db_connection.php';
+
 
 function getCategories() {
     global $conn;
-    $result = $conn->query("SELECT * FROM categories");
-    if (!$result) {
-        die("Query failed: " . $conn->error);
-    }
-    return $result->fetch_all(MYSQLI_ASSOC);
+    $sql = "SELECT * FROM categories";
+    $result = mysqli_query($conn, $sql);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 function getSelectedCategory() {
@@ -40,12 +39,9 @@ function displayCategories() {
 
 function getSubcategories($category) {
     global $conn;
-    $result = $conn->query("SELECT * FROM subcategories WHERE category = '" . 
-        $conn->real_escape_string($category) . "'");
-    if (!$result) {
-        die("Query failed: " . $conn->error);
-    }
-    return $result->fetch_all(MYSQLI_ASSOC);
+    $sql = "SELECT * FROM subcategories WHERE category = '$category'";
+    $result = mysqli_query($conn, $sql);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 function displaySubcategories() {
@@ -71,12 +67,9 @@ function displaySubcategories() {
 
 function getProducts($subcategory) {
     global $conn;
-    $result = $conn->query("SELECT * FROM products WHERE subcategory = '" . 
-        $conn->real_escape_string($subcategory) . "'");
-    if (!$result) {
-        die("Query failed: " . $conn->error);
-    }
-    return $result->fetch_all(MYSQLI_ASSOC);
+    $sql = "SELECT * FROM products WHERE subcategory = '$subcategory'";
+    $result = mysqli_query($conn, $sql);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 function displayProducts() {
@@ -92,8 +85,7 @@ function displayProducts() {
     $output .= '<hr class="w-full" />';
     
     if (!empty($products)) {
-        $output .= "<div class='flex flex-row justify-start items-start my-3 gap-3 [&>*]:border-1 [&>*]:border-gray-300 [&>*]:rounded-xs [&>*]:w-[25rem] [&>*>div]:flex [&>*>div]:flex-row [&>*>div]:justify-start [&>*>div]:items-center [&>*>div]:p-3 [&>*>div]:gap-3 [&>*>div>div]:flex [&>*>div>div]:flex-col [&>*>div>div>button]:ml-30 [&>*>div>div]:gap-2 [&>*>div>img]:w-[6.5rem] [&>*>div>img]:h-[6.5rem] [&>*>div>h3]:text-nowrap [&>*>div>h3]:text-gray-500 [&>*>div>div>p]:text-sm [&>*>div>div>p]:text-gray-600 [&>*>div>div>p]:text-wrap 
-        '>";
+        $output .= "<div class='flex flex-row justify-start items-start my-3 gap-3 [&>*]:border-1 [&>*]:border-gray-300 [&>*]:rounded-xs [&>*]:w-[25rem] [&>*>div]:flex [&>*>div]:flex-row [&>*>div]:justify-start [&>*>div]:items-center [&>*>div]:p-3 [&>*>div]:gap-3 [&>*>div>div]:flex [&>*>div>div]:flex-col [&>*>div>div>button]:ml-30 [&>*>div>div]:gap-2 [&>*>div>img]:w-[6.5rem] [&>*>div>img]:h-[6.5rem] [&>*>div>h3]:text-nowrap [&>*>div>h3]:text-gray-500 [&>*>div>div>p]:text-sm [&>*>div>div>p]:text-gray-600 [&>*>div>div>p]:text-wrap'>";
         
         foreach($products as $product) {
             $output .= renderProductCard($product);
@@ -173,13 +165,14 @@ function displayOrder() {
                 </div>';
     }
 
-    global $conn;
     $output = '<div class="flex justify-start items-start flex-col">';
     $output .= '<h1 class="text-md font-semibold text-gray-700">Order</h1>';
     $output .= '<hr class="border-[#346734] w-full mb-4" />';
+    $output .= '<div class="flex flex-row justify-between items-start w-full">';
     $output .= '<div class="flex flex-col gap-4 w-1/3">';
 
     $total = 0;
+
     foreach ($_SESSION['order'] as $product_id => $ordered_product) {
 
         if ($ordered_product) {
@@ -187,11 +180,11 @@ function displayOrder() {
             $total += $subtotal;
             $output .= '<div class="flex justify-between items-center border-b border-gray-200 pb-2">';
             $output .= '<div class="flex flex-start items-center">';
-            $output .= '<div class="flex flex-col justify-start items-center">';
-            $output .= '<h1 class="text-gray-700">' . htmlspecialchars($ordered_product['name']) . '</h1>';
-            $output .= '<div class="flex flex-row justify-between items-center">';
+            $output .= '<div class="flex flex-col justify-start items-start">';
+            $output .= '<h1 class="text-gray-700 text-md">' . htmlspecialchars($ordered_product['name']) . '</h1>';
+            $output .= '<div class="flex flex-row justify-start items-center">';
             $output .= '<p class="text-sm text-gray-500">Quantity: ' . $ordered_product['quantity'] . '</p>';
-            $output .= '<form action="order.php" method="post" class="flex flex-col justify-between items-center ml-3  [&>*]:border-1 [&>*]:border-gray-300 [&>*]:bg-gray-200 [&>*]:text-[0.5rem] [&>*]:text-black [&>*]:cursor-pointer">';
+            $output .= '<form action="order.php" method="post" class="flex flex-col justify-between items-center ml-3  [&>*]:border-1 [&>*]:w-[0.7rem] [&>*]:h-[0.8rem] [&>*]:border-gray-300 [&>*]:bg-gray-100 [&>*]:text-[0.5rem] [&>*]:text-black [&>*]:cursor-pointer">';
             $output .= '<button href="?view=order" type="submit" name="increaseQuantity" id="increaseQuantity" value="' . $product_id . '">
             ▲
             </button>';
@@ -210,15 +203,106 @@ function displayOrder() {
     }
 
     $output .= '<div class="flex justify-between items-center mt-4 pt-2 border-t border-gray-300">';
-    $output .= '<h3 class="text-lg font-semibold text-gray-700">Total:</h3>';
+    $output .= '<h3 class="text-md font-semibold text-gray-500">Total:</h3>';
     $output .= '<p class="text-lg font-bold text-[#346734]">$' . number_format($total, 2) . '</p>';
     $output .= '</div>';
+    $output .= '</div>';
 
-    $output .= '</div></div>';
+    if (isset($_SESSION['order_error'])) {
+        $output .= '<div class="w-1/3 flex justify-start items-start flex-col">';
+        $output .= '<p class="text-red-500">' . $_SESSION['order_error'] . '</p>';
+        $output .= '</div>';
+        unset($_SESSION['order_error']);
+    }
+
+    $output .= '<div class="w-1/3 border-1 px-5 py-3 border-[#346734] flex flex-col justify-start items-start">
+      <h1>Checkout</h1>
+      <hr class="border-[#346734] w-full my-4 border-1" />
+      <form action="order.php" method="post" class="w-full flex flex-col justify-center items-start gap-4 [&>input]:border-1 [&>input]:border-gray-300 [&>input]:px-2 [&>input]:py-1 [&>input]:text-sm [&>input]:text-gray-500 [&>input]:w-full">
+        <h2 class="text-sm font-semibold text-gray-500">Postal Information</h2>
+        <input type="text" name="name" id="name" placeholder="Name" />
+        <input
+          type="text"
+          name="lastname"
+          id="lastname"
+          placeholder="Last Name"
+        />
+        <input type="text" name="address" id="address" placeholder="Address" />
+        <input type="text" name="city" id="city" placeholder="City" />
+        <input
+          type="text"
+          name="postalCode"
+          id="postalCode"
+          placeholder="Postal Code"
+        />
+        <input type="tel" name="phone" id="phone" placeholder="Phone Number" />
+        <hr class="w-full mb-1 border-1 border-gray-300" />
+        <h2 class="text-sm font-semibold text-gray-500">Payment Information</h2>
+        <input type="number" name="creditCard" id="creditCard" placeholder="Credit Card Number" />
+        <input type="number" name="expirationDate" id="expirationDate" placeholder="Expiration Date" />
+        <input type="number" name="cvv" id="cvv" placeholder="CVV" />
+        <input type="hidden" name="total" id="total" value="' . $total . '" />
+        <div class="flex justify-center items-center w-full my-3">
+            <button type="submit" name="checkout" class="w-2/3 bg-[#346734] text-white font-semibold px-4 py-2 active:rounded-sm hover:bg-green-700">Checkout</button>
+        </div>
+      </form>
+    </div>';
+    $output .= '</div>';
+    $output .= '</div>';
     return $output;
 }
 
-echo "<!-- Database connection successful -->\n";
-$cats = getCategories();
-echo "<!-- Found " . count($cats) . " categories -->\n";
+function displayOrderConfirmed() {
+    global $conn;
+    $id = $_SESSION['last_order_id'];
+    $stmt = $conn->prepare("SELECT * FROM orders WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $order = $result->fetch_assoc();
+    $products = json_decode($order['products'], true);
+    $output = '<div class="flex justify-start items-start flex-col">
+                <h1 class="text-lg font-semibold text-[#346734]">Order #' . $order['id'] . ' Confirmed</h1>
+                <hr class="border-[#346734] w-full mb-4" />
+                <p class="text-gray-500 mb-3">Summary</p>
+                <p class="text-gray-500">Total: $' . $order['total'] . '</p>
+                <p class="text-gray-500">Order date: ' . $order['created_at'] . '</p>
+                <p class="text-gray-500">Order status: ' . $order['status'] . '</p>
+                <p class="text-gray-500 my-3">Products ordered:</p><ul>';
+    foreach ($products as $product) {
+        $output .= '<li class="flex flex-row justify-start items-start"><p class="text-gray-500">' . $product['name'] . '&nbsp;&nbsp;-</p>';
+        $output .= '<p class="ml-3 text-gray-500">' . $product['quantity'] . ' pieces</p></li>';
+    }
+    $output .= '</ul></div>';
+    return $output;
+}
+
+function displayOrderHistory() {
+    global $conn;
+    $userId = $_SESSION['user_id'];
+    $sql = "SELECT * FROM orders WHERE userId = $userId";
+    $result = mysqli_query($conn, $sql);
+
+    $output = '<div class="flex justify-start items-start flex-col">
+    <h1 class="text-lg font-semibold text-[#346734]">Order History</h1>
+    <hr class="border-[#346734] w-full mb-4" />';
+
+    if (mysqli_num_rows($result) > 0) {
+        while($order = mysqli_fetch_assoc($result)) {
+            $output .= '<div class="flex flex-row justify-between items-center border-b border-gray-200 pb-2">';
+            $output .= '<p class="text-gray-500">Order #' . $order['id'] . '</p>';
+            $output .= '<p class="text-gray-500">Total: $' . $order['total'] . '</p>';
+            $output .= '<p class="text-gray-500">Order date: ' . $order['created_at'] . '</p>';
+            $output .= '<p class="text-gray-500">Order status: ' . $order['status'] . '</p>';
+            $output .= '</div>';
+        }
+    } else {
+        $output .= '<p class="text-gray-500">No orders found</p>';
+    }
+
+    $output .= '</div>';
+    return $output;
+}
+
+
 ?>

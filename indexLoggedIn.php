@@ -125,7 +125,7 @@ require_once 'db_connection.php';
               <a href="?view=order">ORDER</a>
             </button>
             <button class="text-[#346734] font-bold py-2 rounded-md">
-              ORDER HISTORY
+              <a href="?view=orderhistory">ORDER HISTORY</a>
             </button>
           </div>
         </div>
@@ -164,6 +164,10 @@ require_once 'db_connection.php';
             } else if ($_GET['view'] === 'products' && isset($_GET['subcategory'])) {
                 $products = displayProducts();
                 echo empty($products) ? "No products found" : $products;
+            } else if ($_GET['view'] === 'orderconfirmed') {
+                echo displayOrderConfirmed();
+            } else if ($_GET['view'] === 'orderhistory') {
+                echo displayOrderHistory();
             }
         } else {
             $mainContent = displayMainContent();
