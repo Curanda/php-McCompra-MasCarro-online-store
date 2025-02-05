@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     if (strlen($password) < 8) {
-        $_SESSION['createLogin_error'] = 'Must be at least 8 characters long';
+        $_SESSION['createLogin_error'] = 'Password must be at least 8 characters long';
         header('Location: index.php');
         exit;
     }
