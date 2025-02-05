@@ -36,7 +36,7 @@ require_once 'db_connection.php';
               transform-origin: left;
             "
           >
-            McCOMPRA-MasCARRO
+            <a href="indexLoggedIn.php?view=allSubcategories" class="cursor-pointer">McCOMPRA-MasCARRO</a>
           </h1>
           <p class="text-xs ml-[-5.5rem] mt-5 text-[#346734]">&#xA9;</p>
         </div>
@@ -176,6 +176,8 @@ require_once 'db_connection.php';
                 echo displayOrderConfirmed();
             } else if ($_GET['view'] === 'orderhistory') {
                 echo displayOrderHistory();
+            } else if ($_GET['view'] === 'allSubcategories') {
+                echo displayAllSubcategories();
             }
         } else {
             $mainContent = displayMainContent();

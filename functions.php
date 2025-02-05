@@ -11,9 +11,7 @@ function getCategories() {
 }
 
 function getSelectedCategory() {
-    $default = 'Quantum Harmonizing';
-    $selected = isset($_GET['category']) ? $_GET['category'] : $default;
-    $_SESSION['selectedCategory'] = $selected;
+    $selected = isset($_GET['category']) ? $_GET['category'] : 'Quantum Harmonizing';
     return $selected;
 }
 
@@ -54,8 +52,9 @@ function getProducts($subcategory) {
 
 function displayProducts() {
     $selectedSubcategory = isset($_GET['subcategory']) ? $_GET['subcategory'] : '';
-    $selectedCategory = getSelectedCategory();
     $products = getProducts($selectedSubcategory);
+    $selectedCategory = $products[0]['category'];
+
     
     $str = '<h1 class="text-lg font-semibold text-[#346734]">' . htmlspecialchars($selectedCategory) . '</h1>
                 <hr class="border-[#346734] w-full" />
@@ -346,6 +345,22 @@ function displayOrderHistory() {
                 </div>';
     }
 
+    return $str;
+}
+
+function displayAllSubcategories() {
+    global $conn;
+    $sql = "SELECT * FROM subcategories";
+    $result = mysqli_query($conn, $sql);
+    $subcategories = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $str = '<div class="flex justify-start items-start flex-col">
+                <h1 class="text-lg font-semibold text-[#346734]">All Categories</h1>
+                <hr class="border-[#346734] w-full mb-4" />
+                <div class="flex flex-row flex-wrap justify-start items-start gap-4 *:flex-col *:text-center *:text-[0.7rem] *:text-gray-700 *:text-wrap [&>div>a>img]:border-1 [&>div>a>img]:border-gray-200 [&>div>a>img]:w-[4rem] [&>div>a>img]:h-[4rem] [&>div>p]:text-wrap [&>div>p]:w-[4rem]">';
+    foreach ($subcategories as $subcategory) {
+        $str .= renderSubcategoryItem($subcategory);
+    }
+    $str .= '</div>';
     return $str;
 }
 

@@ -43,7 +43,7 @@ if (isset($_COOKIE['mccompracookie'])) {
               transform-origin: left;
             "
           >
-            McCOMPRA-MasCARRO
+            <a href="index.php?view=allSubcategories" class="cursor-pointer">McCOMPRA-MasCARRO</a>
           </h1>
           <p class="text-xs ml-[-5.5rem] mt-5 text-[#346734]">&#xA9;</p>
         </div>
@@ -291,23 +291,19 @@ if (isset($_COOKIE['mccompracookie'])) {
       </aside>
       <main id="detailedView" class="w-full m-2">
         <?php
-        if (isset($_GET['view']) && $_GET['view'] === 'products' && isset($_GET['subcategory'])) {
-            $products = displayProducts();
-            if (empty($products)) {
-                echo "No products found";
-            } else {
-                echo $products;
-            }
-        } else if (isset($_GET['view']) && $_GET['view'] === 'order') {
-            echo displayOrder();
-        } else {
-            $mainContent = displayMainContent();
-            if (empty($mainContent)) {
-                echo "No main content found";
-            } else {
-                echo $mainContent;
-            }
-        }
+        if (isset($_GET['view'])) {
+          if ($_GET['view'] === 'order') {
+              echo displayOrder();
+          } else if ($_GET['view'] === 'products' && isset($_GET['subcategory'])) {
+              $products = displayProducts();
+              echo empty($products) ? "No products found" : $products;
+          } else if ($_GET['view'] === 'allSubcategories') {
+              echo displayAllSubcategories();
+          }
+      } else {
+          $mainContent = displayMainContent();
+          echo empty($mainContent) ? "No main content found" : $mainContent;
+      }
         ?>
       </main>
     </section>
