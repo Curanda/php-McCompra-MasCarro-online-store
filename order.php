@@ -2,28 +2,41 @@
 session_start();
 require_once 'db_connection.php';
 
-if (isset($_POST['product_id']) && isset($_POST['product_name']) && isset($_POST['product_price'])) {
+if (!isset($_SESSION['outOfStockItems'])) {
+    $_SESSION['outOfStockItems'] = array();
+}
+
+if (isset($_POST['product_id']) && isset($_POST['product_name']) && isset($_POST['product_price']) && isset($_POST['max_quantity'])) {
     $product_id = $_POST['product_id'];
     $product_name = $_POST['product_name'];
     $product_price = $_POST['product_price'];
-
+    $max_quantity = $_POST['max_quantity'];
     
     if (!isset($_SESSION['order'])) {
         $_SESSION['order'] = array(
             $product_id => array(
                 'name' => $product_name,
                 'price' => $product_price,
-                'quantity' => 1
+                'quantity' => 1,
+                'max_quantity' => $max_quantity
             )
         );
     } else {
         if (isset($_SESSION['order'][$product_id])) {
-            $_SESSION['order'][$product_id]['quantity']++;
+            if ($_SESSION['order'][$product_id]['quantity'] < $max_quantity) {
+                $_SESSION['order'][$product_id]['quantity']++;
+            }
+            if ($_SESSION['order'][$product_id]['quantity'] >= $max_quantity) {
+                if (!in_array($product_id, $_SESSION['outOfStockItems'])) {
+                    $_SESSION['outOfStockItems'][] = $product_id;
+                }
+            }
         } else {
             $_SESSION['order'][$product_id] = array(
                 'name' => $product_name,
                 'price' => $product_price,
-                'quantity' => 1
+                'quantity' => 1,
+                'max_quantity' => $max_quantity
             );
         }
     }
@@ -31,7 +44,11 @@ if (isset($_POST['product_id']) && isset($_POST['product_name']) && isset($_POST
 
 if (isset($_POST['increaseQuantity'])) {
     $product_id = $_POST['increaseQuantity'];
-    $_SESSION['order'][$product_id]['quantity']++;
+    if ($_SESSION['order'][$product_id]['quantity'] < $_SESSION['order'][$product_id]['max_quantity']) {
+        $_SESSION['order'][$product_id]['quantity']++;
+    } else {
+        array_push($_SESSION['outOfStockItems'], $_SESSION['order'][$product_id]);
+    }
     header('Location: indexLoggedIn.php?view=order');
     exit;
 }
@@ -40,10 +57,20 @@ if (isset($_POST['decreaseQuantity'])) {
     $product_id = $_POST['decreaseQuantity'];
     if ($_SESSION['order'][$product_id]['quantity'] > 1) {
         $_SESSION['order'][$product_id]['quantity']--;
+        if (in_array($product_id, $_SESSION['outOfStockItems'])) {
+            $key = array_search($product_id, $_SESSION['outOfStockItems']);
+            unset($_SESSION['outOfStockItems'][$key]);
+            $_SESSION['outOfStockItems'] = array_values($_SESSION['outOfStockItems']);
+        }
         header('Location: indexLoggedIn.php?view=order');
         exit;
     } else {
         unset($_SESSION['order'][$product_id]);
+        if (in_array($product_id, $_SESSION['outOfStockItems'])) {
+            $key = array_search($product_id, $_SESSION['outOfStockItems']);
+            unset($_SESSION['outOfStockItems'][$key]);
+            $_SESSION['outOfStockItems'] = array_values($_SESSION['outOfStockItems']);
+        }
         header('Location: indexLoggedIn.php?view=order');
         exit;
     }
