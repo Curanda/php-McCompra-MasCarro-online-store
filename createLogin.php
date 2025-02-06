@@ -2,7 +2,9 @@
 session_start();
 require_once 'db_connection.php';
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $name = trim($_POST['name']);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $password = trim($_POST['password']);
@@ -66,6 +68,9 @@ function verifyUserExists($email) {
 
 function createUser($name, $email, $password) {
     global $conn;
+
+    $password = password_hash($password, PASSWORD_DEFAULT);
+
     $name = $conn->real_escape_string($name);
     $history = $conn->real_escape_string('');
     $email = $conn->real_escape_string($email);
@@ -76,6 +81,7 @@ function createUser($name, $email, $password) {
 
     return $conn->insert_id;
 }
+
 
 
 ?>

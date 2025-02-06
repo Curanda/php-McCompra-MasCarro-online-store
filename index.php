@@ -2,12 +2,15 @@
 session_start();
 require_once 'functions.php';
 require_once 'db_connection.php';
-require_once 'login.php';
 require_once 'searchEngine.php';
 
 if (isset($_COOKIE['mccompracookie'])) {
     $mccompracookie = json_decode($_COOKIE['mccompracookie'], true);
     loginUser($mccompracookie['email'], $mccompracookie['password']);
+}
+
+if (!isset($_SESSION['outOfStockItems'])) {
+  $_SESSION['outOfStockItems'] = array();
 }
 
 ?>
@@ -163,6 +166,7 @@ if (isset($_COOKIE['mccompracookie'])) {
                 </div>
                 <div class="flex flex-col gap-2">
                   <button
+                    name="login"
                     type="submit"
                     class="bg-[#346734] text-white py-1 rounded-sm hover:bg-green-700"
                   >
@@ -291,6 +295,13 @@ if (isset($_COOKIE['mccompracookie'])) {
         </div>
       </aside>
       <main id="detailedView" class="w-full m-2">
+        <?php
+        if (isset($_SESSION['login_error']) || isset($_SESSION['createLogin_error'])) {
+            echo "<p class='text-red-500 text-xs'>" . $_SESSION['login_error'] . "</p><hr class='border-yellow-400 border-[1px]' />";
+            unset($_SESSION['login_error']);
+            // unset($_SESSION['createLogin_error']);
+        }
+        ?>
         <?php
 
         if (isset($_GET['view']) && $_GET['view'] === 'products') {

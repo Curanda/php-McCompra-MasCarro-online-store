@@ -2,8 +2,6 @@
 session_start();
 require_once 'db_connection.php';
 
-$_SESSION['outOfStockItems'] = [];
-
 function getCategories() {
     global $conn;
     $sql = "SELECT * FROM categories";
@@ -266,17 +264,17 @@ HTML;
                 <hr class="border-[#346734] w-full my-4 border-1" />
                 <form action="order.php" method="post" class="w-full flex flex-col justify-center items-start gap-4 [&>input]:border-1 [&>input]:border-gray-300 [&>input]:px-2 [&>input]:py-1 [&>input]:text-sm [&>input]:text-gray-500 [&>input]:w-full">
                     <h2 class="text-sm font-semibold text-gray-500">Postal Information</h2>
-                    <input type="text" name="name" id="name" placeholder="Name" />
-                    <input type="text" name="lastname" id="lastname" placeholder="Last Name" />
+                    <input type="text" name="name" id="name" pattern="[A-Za-z]+" placeholder="Name" />
+                    <input type="text" name="lastname" id="lastname" pattern="[A-Za-z]+" placeholder="Last Name" />
                     <input type="text" name="address" id="address" placeholder="Address" />
-                    <input type="text" name="city" id="city" placeholder="City" />
-                    <input type="text" name="postalCode" id="postalCode" placeholder="Postal Code" />
+                    <input type="text" name="city" id="city" pattern="[A-Za-z]+" placeholder="City" />
+                    <input type="text" name="postalCode" id="postalCode" pattern="\d{2}/\d{3}" placeholder="Postal Code: XX-XXX" />
                     <input type="tel" name="phone" id="phone" placeholder="Phone Number" />
                     <hr class="w-full mb-1 border-1 border-gray-300" />
                     <h2 class="text-sm font-semibold text-gray-500">Payment Information</h2>
-                    <input type="number" name="creditCard" id="creditCard" placeholder="Credit Card Number" />
-                    <input type="number" name="expirationDate" id="expirationDate" placeholder="Expiration Date" />
-                    <input type="number" name="cvv" id="cvv" placeholder="CVV" />
+                    <input type="number" name="creditCard" pattern="\d{16}" id="creditCard" placeholder="Credit Card Number" />
+                    <input type="number" name="expirationDate" pattern="\d{2}/\d{2}" id="expirationDate" placeholder="Expiration Date: MM/YY" />
+                    <input type="number" name="cvv" pattern="\d{3}" id="cvv" placeholder="CVV" />
                     <input type="hidden" name="total" id="total" value="{$total}" />
                     <div class="flex justify-center items-center w-full my-3">
                         <button type="submit" name="checkout" class="w-2/3 bg-[#346734] text-white font-semibold px-4 py-2 active:rounded-sm hover:bg-green-700">Checkout</button>
