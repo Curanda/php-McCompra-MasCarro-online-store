@@ -2,6 +2,8 @@
 session_start();
 require_once 'functions.php';
 require_once 'db_connection.php';
+require_once 'searchEngine.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -44,20 +46,24 @@ require_once 'db_connection.php';
           class="flex justify-center items-start flex-1 mx-4 font-bold"
           id="searchBar"
         >
-          <div
+          <form
             class="border-1 border-gray-500 w-3/5 flex flex-row justify-between font-normal"
+            action="searchEngine.php"
+            method="post"
           >
             <input
               type="text"
               placeholder="Search"
               class="border-0 focus:outline-none px-1 py-1"
+              name="search"
             />
-            <button class="text-xs mr-1 mt-1">
+            <button class="text-xs mr-1 mt-1" type="submit" name="searchButton"
+            >
               <span class="material-symbols-outlined text-gray-500"
                 >search</span
               >
             </button>
-          </div>
+          </form>
         </div>
         <div class="flex justify-end items-end flex-col">
           <ul
@@ -166,23 +172,47 @@ require_once 'db_connection.php';
       </aside>
       <main id="detailedView" class="w-full m-2">
         <?php
-        if (isset($_GET['view'])) {
-            if ($_GET['view'] === 'order') {
-                echo displayOrder();
-            } else if ($_GET['view'] === 'products' && isset($_GET['subcategory'])) {
-                $products = displayProducts();
-                echo empty($products) ? "No products found" : $products;
-            } else if ($_GET['view'] === 'orderconfirmed') {
-                echo displayOrderConfirmed();
-            } else if ($_GET['view'] === 'orderhistory') {
-                echo displayOrderHistory();
-            } else if ($_GET['view'] === 'allSubcategories') {
-                echo displayAllSubcategories();
-            }
-        } else {
-            $mainContent = displayMainContent();
-            echo empty($mainContent) ? "No main content found" : $mainContent;
-        }
+        if (isset($_GET['view']) && $_GET['view'] === 'products' && isset($_GET['subcategory'])) {
+          echo displayProducts();
+      } else if (isset($_GET['view']) && $_GET['view'] === 'order') {
+          echo displayOrder();
+      } else if (isset($_GET['view']) && $_GET['view'] === 'orderconfirmed') {
+          echo displayOrderConfirmed();
+      } else if (isset($_GET['view']) && $_GET['view'] === 'orderhistory') {
+          echo displayOrderHistory();
+      } else if (isset($_GET['view']) && $_GET['view'] === 'allSubcategories') {
+          echo displayAllSubcategories();
+      } else if (isset($_GET['view']) && $_GET['view'] === 'search') {
+          echo displaySearchResults();
+      } else {
+          $mainContent = displayMainContent();
+          if (empty($mainContent)) {
+              echo "Having trouble loading our storefront. Please wait...";
+          } else {
+              echo $mainContent;
+          }
+      }
+
+
+
+
+        // if (isset($_GET['view'])) {
+        //     if ($_GET['view'] === 'order') {
+        //         echo displayOrder();
+        //     } else if ($_GET['view'] === 'products' && isset($_GET['subcategory'])) {
+        //         $products = displayProducts();
+        //         echo empty($products) ? "No products found" : $products;
+        //     } else if ($_GET['view'] === 'orderconfirmed') {
+        //         echo displayOrderConfirmed();
+        //     } else if ($_GET['view'] === 'orderhistory') {
+        //         echo displayOrderHistory();
+        //     } else if ($_GET['view'] === 'allSubcategories') {
+        //         echo displayAllSubcategories();
+        //     }
+        // } else {
+        //     $mainContent = displayMainContent();
+        //     echo empty($mainContent) ? "No main content found" : $mainContent;
+        // }
         ?>
       </main>
     </section>

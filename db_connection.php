@@ -47,19 +47,6 @@ function createTables($connTemp) {
     )";
     mysqli_query($connTemp, $sql) or exit("Table creation failed");
 
-    $sql = "CREATE TABLE IF NOT EXISTS products (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        category VARCHAR(255) NOT NULL,
-        subcategory VARCHAR(255) NOT NULL,
-        imageURL VARCHAR(255) NOT NULL,
-        description TEXT NOT NULL,
-        price DECIMAL(10, 2) NOT NULL,
-        stock INT NOT NULL,
-        FOREIGN KEY (category) REFERENCES categories(category),
-        FOREIGN KEY (subcategory) REFERENCES subcategories(subcategory)
-    )";
-    mysqli_query($connTemp, $sql) or exit("Table creation failed");
 
     $sql = "CREATE TABLE IF NOT EXISTS orders (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -94,6 +81,21 @@ function createTables($connTemp) {
         imageURL VARCHAR(255) NOT NULL,
         INDEX (subcategory),
         FOREIGN KEY (category) REFERENCES categories(category)
+    )";
+    mysqli_query($connTemp, $sql) or exit("Table creation failed");
+
+
+    $sql = "CREATE TABLE IF NOT EXISTS products (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        category VARCHAR(255) NOT NULL,
+        subcategory VARCHAR(255) NOT NULL,
+        imageURL VARCHAR(255) NOT NULL,
+        description TEXT NOT NULL,
+        price DECIMAL(10, 2) NOT NULL,
+        stock INT NOT NULL,
+        FOREIGN KEY (category) REFERENCES categories(category),
+        FOREIGN KEY (subcategory) REFERENCES subcategories(subcategory)
     )";
     mysqli_query($connTemp, $sql) or exit("Table creation failed");
 }

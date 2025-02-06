@@ -3,6 +3,7 @@ session_start();
 require_once 'functions.php';
 require_once 'db_connection.php';
 require_once 'login.php';
+require_once 'searchEngine.php';
 
 if (isset($_COOKIE['mccompracookie'])) {
     $mccompracookie = json_decode($_COOKIE['mccompracookie'], true);
@@ -51,20 +52,24 @@ if (isset($_COOKIE['mccompracookie'])) {
           class="flex justify-center items-start flex-1 mx-4 font-bold"
           id="searchBar"
         >
-          <div
+          <form
             class="border-1 border-gray-500 w-3/5 flex flex-row justify-between font-normal"
+            action="searchEngine.php"
+            method="post"
           >
             <input
               type="text"
               placeholder="Search"
               class="border-0 focus:outline-none px-1 py-1"
+              name="search"
             />
-            <button class="text-xs mr-1 mt-1">
+            <button class="text-xs mr-1 mt-1" type="submit" name="searchButton"
+            >
               <span class="material-symbols-outlined text-gray-500"
                 >search</span
               >
             </button>
-          </div>
+          </form>
         </div>
         <div class="flex justify-end items-end flex-col">
           <ul
@@ -246,9 +251,9 @@ if (isset($_COOKIE['mccompracookie'])) {
             </li>
           </ul>
           <div class="flex gap-10 justify-end items-end w-full">
-            <button class="text-[#346734] font-bold py-2 rounded-md">
-            <a href="?view=order">ORDER</a>
-            <?php
+            <button class="text-[#346734] font-bold py-2 rounded-md relative">
+              <a href="?view=order">ORDER</a>
+              <?php
               if (isset($_SESSION['order']) && !empty($_SESSION['order'])) {
                   $countIds = count($_SESSION['order']);
                   echo '<span class="absolute top-1 -right-3 bg-yellow-300 text-xs text-[#346734] rounded-full h-4 w-4 flex items-center justify-center">' 
@@ -280,30 +285,30 @@ if (isset($_COOKIE['mccompracookie'])) {
           >
             <?php 
               $categories = displayCategories();
-          if (empty($categories)) {
-              echo "No categories found";
-          } else {
               echo $categories;
-          }
-        ?>
+            ?>
         </ul>
         </div>
       </aside>
       <main id="detailedView" class="w-full m-2">
         <?php
-        if (isset($_GET['view'])) {
-          if ($_GET['view'] === 'order') {
-              echo displayOrder();
-          } else if ($_GET['view'] === 'products' && isset($_GET['subcategory'])) {
-              $products = displayProducts();
-              echo empty($products) ? "No products found" : $products;
-          } else if ($_GET['view'] === 'allSubcategories') {
-              echo displayAllSubcategories();
-          }
-      } else {
-          $mainContent = displayMainContent();
-          echo empty($mainContent) ? "No main content found" : $mainContent;
-      }
+
+        if (isset($_GET['view']) && $_GET['view'] === 'products') {
+            echo displayProducts();
+        } else if (isset($_GET['view']) && $_GET['view'] === 'order') {
+            echo displayOrder();
+        } else if (isset($_GET['view']) && $_GET['view'] === 'allSubcategories') {
+            echo displayAllSubcategories();
+        } else if (isset($_GET['view']) && $_GET['view'] === 'search') {
+            echo displaySearchResults();
+        } else {
+            $mainContent = displayMainContent();
+            if (empty($mainContent)) {
+                echo "Having trouble loading our storefront. Please wait...";
+            } else {
+                echo $mainContent;
+            }
+        }
         ?>
       </main>
     </section>

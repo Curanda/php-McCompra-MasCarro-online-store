@@ -2,6 +2,7 @@
 session_start();
 require_once 'db_connection.php';
 
+$_SESSION['outOfStockItems'] = [];
 
 function getCategories() {
     global $conn;
@@ -11,7 +12,7 @@ function getCategories() {
 }
 
 function getSelectedCategory() {
-    $selected = isset($_GET['category']) ? $_GET['category'] : 'Quantum Harmonizing';
+    $selected = isset($_GET['category']) ? $_GET['category'] : $_SESSION['selectedCategory'];
     return $selected;
 }
 
@@ -23,6 +24,7 @@ function renderCategoryItem($category, $isActive) {
 function displayCategories() {
     $categories = getCategories();
     $selectedCategory = getSelectedCategory();
+    $_SESSION['selectedCategory'] = $selectedCategory;
     
     $str = '';
     if (!empty($categories)) {
@@ -54,6 +56,7 @@ function displayProducts() {
     $selectedSubcategory = isset($_GET['subcategory']) ? $_GET['subcategory'] : '';
     $products = getProducts($selectedSubcategory);
     $selectedCategory = $products[0]['category'];
+    $_SESSION['selectedCategory'] = $selectedCategory;
 
     
     $str = '<h1 class="text-lg font-semibold text-[#346734]">' . htmlspecialchars($selectedCategory) . '</h1>
@@ -88,6 +91,10 @@ function renderSubcategoryItem($subcategory) {
 
 function renderProductCard($product) {
     $currentView = isset($_GET['subcategory']) ? '&subcategory=' . urlencode($_GET['subcategory']) : '';
+
+    if ($product['stock'] == 0 && (!in_array($product['id'], $_SESSION['outOfStockItems']))) {
+        $_SESSION['outOfStockItems'][] = $product['id'];
+    }
 
     if (isset($_SESSION['outOfStockItems']) && (in_array($product['id'], $_SESSION['outOfStockItems']))) {
         $inStock = 'Out of Stock';
@@ -170,7 +177,10 @@ function displayOrder() {
     if (isset($_SESSION['user_id'])) {
         $str = <<<HTML
             <div class="flex justify-start items-start flex-col">
-                <h1 class="text-md font-semibold text-gray-700">Order</h1>
+            <div class="flex flex-row justify-between items-between w-full">
+                    <h1 class="text-md font-semibold text-gray-700">Order</h1>
+                    <p class="text-red-400 mr-3">{$_SESSION['order_error']}</p>
+                </div>
                 <hr class="border-[#346734] w-full my-2" />
                 <div class="flex flex-row justify-between items-start w-full">
                     <div class="flex flex-col gap-4 w-1/3">
